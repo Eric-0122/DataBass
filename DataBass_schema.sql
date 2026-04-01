@@ -36,7 +36,6 @@ CREATE TABLE albums (
     album_id INT PRIMARY KEY,
     artist_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
-    release_date DATE,
     duration DECIMAL(10,2),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_albums_artist
@@ -88,3 +87,46 @@ CREATE TABLE accredation (
         FOREIGN KEY (artist_id) REFERENCES artists(artist_id),
     CONSTRAINT uq_song_artist UNIQUE (song_id, artist_id)
 );
+
+-- these triggers need to be check bc copiolit autofilled them
+DELIMITER //
+CREATE TRIGGER update_playlist_duration_after_insert
+    AFTER INSERT
+ON existence
+FOR EACH ROW
+BEGIN
+    DECLARE song_duration DECIMAL(10,2);
+    SELECT duration INTO song_duration FROM songs WHERE song_id = NEW.song_id;
+    UPDATE playlists
+    SET duration = duration + song_duration
+    WHERE playlist_id = NEW.playlist_id;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER update_playlist_duration_after_delete
+    AFTER DELETE
+ON existence
+FOR EACH ROW
+BEGIN
+    DECLARE song_duration DECIMAL(10,2);
+    SELECT duration INTO song_duration FROM songs WHERE song_id = OLD.song_id;
+    UPDATE playlists
+    SET duration = duration - song_duration
+    WHERE playlist_id = OLD.playlist_id;
+END //
+DELIMITER ;
+
+CREATE TRIGGER update_playlist_duration_after_update
+    AFTER UPDATE ON existence
+FOR EACH ROW
+BEGIN
+    DECLARE old_song_duration DECIMAL(10,2);
+    DECLARE new_song_duration DECIMAL(10,2);
+    SELECT duration INTO old_song_duration FROM songs WHERE song_id = OLD.song_id;
+    SELECT duration INTO new_song_duration FROM songs WHERE song_id = NEW.song_id;
+    UPDATE playlists
+    SET duration = duration - old_song_duration + new_song_duration
+    WHERE playlist_id = NEW.playlist_id;
+END //
+DELIMITER ;
