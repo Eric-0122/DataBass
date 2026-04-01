@@ -37,6 +37,7 @@ CREATE TABLE albums (
     artist_id INT NOT NULL,
     title VARCHAR(200) NOT NULL,
     duration DECIMAL(10,2),
+    release_date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_albums_artist
         FOREIGN KEY (artist_id) REFERENCES artists(artist_id),
