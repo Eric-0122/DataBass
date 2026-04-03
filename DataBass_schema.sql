@@ -90,6 +90,9 @@ CREATE TABLE accredation (
 );
 
 -- these triggers need to be check bc copiolit autofilled them
+DROP TRIGGER IF EXISTS update_playlist_duration_after_insert;
+DROP TRIGGER IF EXISTS update_playlist_duration_after_delete;
+DROP TRIGGER IF EXISTS update_playlist_duration_after_update;
 DELIMITER //
 CREATE TRIGGER update_playlist_duration_after_insert
     AFTER INSERT
@@ -102,9 +105,7 @@ BEGIN
     SET duration = duration + song_duration
     WHERE playlist_id = NEW.playlist_id;
 END //
-DELIMITER ;
 
-DELIMITER //
 CREATE TRIGGER update_playlist_duration_after_delete
     AFTER DELETE
 ON existence
@@ -116,7 +117,6 @@ BEGIN
     SET duration = duration - song_duration
     WHERE playlist_id = OLD.playlist_id;
 END //
-DELIMITER ;
 
 CREATE TRIGGER update_playlist_duration_after_update
     AFTER UPDATE ON existence
