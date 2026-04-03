@@ -89,7 +89,7 @@ CREATE TABLE accredation (
     CONSTRAINT uq_song_artist UNIQUE (song_id, artist_id)
 );
 
--- these triggers need to be check bc copiolit autofilled them
+-- Trigger : checked
 DROP TRIGGER IF EXISTS update_playlist_duration_after_insert;
 DROP TRIGGER IF EXISTS update_playlist_duration_after_delete;
 DROP TRIGGER IF EXISTS update_playlist_duration_after_update;
@@ -130,4 +130,74 @@ BEGIN
     SET duration = duration - old_song_duration + new_song_duration
     WHERE playlist_id = NEW.playlist_id;
 END //
+DELIMITER ;
+
+-- Stored Procedure : add songs to playlist 
+DROP PROCEDURE IF EXISTS sp_add_song_to_playlist;
+
+DELIMITER //
+
+CREATE PROCEDURE sp_add_song_to_playlist(
+    IN p_existence_id INT,
+    IN p_song_id INT,
+    IN p_playlist_id INT
+)
+BEGIN
+    -- check song if exists
+    IF NOT EXISTS (
+        SELECT 1
+        FROM songs
+        WHERE song_id = p_song_id
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Song does not exist';
+
+    -- check playlist if exists
+    ELSEIF NOT EXISTS (
+        SELECT 1
+        FROM playlists
+        WHERE playlist_id = p_playlist_id
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Playlist does not exist';
+
+    -- check duplicate if song in same playlist
+    ELSEIF EXISTS (
+        SELECT 1
+        FROM existence
+        WHERE song_id = p_song_id
+          AND playlist_id = p_playlist_id
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'This song is already in the playlist';
+
+    -- if everything is valid, intert it
+    ELSE
+        INSERT INTO existence (existence_id, song_id, playlist_id)
+        VALUES (p_existence_id, p_song_id, p_playlist_id);
+    END IF;
+END //
+
+DELIMITER ;
+
+-- Function total song in playlist 
+DROP FUNCTION IF EXISTS fn_total_songs_in_playlist;
+
+DELIMITER //
+
+CREATE FUNCTION fn_total_songs_in_playlist(p_playlist_id INT)
+RETURNS INT
+DETERMINISTIC
+READS SQL DATA
+BEGIN
+    DECLARE total_songs INT;
+
+    SELECT COUNT(*)
+    INTO total_songs
+    FROM existence
+    WHERE playlist_id = p_playlist_id;
+
+    RETURN COALESCE(total_songs, 0);
+END //
+
 DELIMITER ;
