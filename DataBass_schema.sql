@@ -2,13 +2,10 @@ DROP DATABASE IF EXISTS databass_db;
 CREATE DATABASE databass_db;
 USE databass_db;
 
---TABLE:genre
-CREATE TABLE genre (
+-- TABLE:genre
+CREATE TABLE genres (
     genre_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    artist_id INT NOT NULL,
-    CONSTRAINT fk_genre_artist
-        FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
+    name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- TABLE: users
@@ -25,10 +22,13 @@ CREATE TABLE users (
 -- TABLE: artists
 CREATE TABLE artists (
     artist_id INT PRIMARY KEY,
+    genre_id INT NOT NULL,
     name VARCHAR(150) NOT NULL,
     country VARCHAR(100) NOT NULL DEFAULT 'Unknown',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uq_artist_name UNIQUE (name)
+    CONSTRAINT uq_artist_name UNIQUE (name),
+    CONSTRAINT fk_artist_genre
+        FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 -- TABLE: albums
 
@@ -118,6 +118,7 @@ BEGIN
     WHERE playlist_id = OLD.playlist_id;
 END //
 
+DELIMITER //
 CREATE TRIGGER update_playlist_duration_after_update
     AFTER UPDATE ON existence
 FOR EACH ROW
