@@ -133,7 +133,8 @@ BEGIN
 END //
 DELIMITER ;
 
--- Stored Procedure : add songs to playlist 
+-- Stored Procedure : add songs to playlist this is necessary to allow users to safely add a song to their
+-- playlist without worrying about data integrity. 
 DROP PROCEDURE IF EXISTS sp_add_song_to_playlist;
 
 DELIMITER //
@@ -181,7 +182,7 @@ END //
 
 DELIMITER ;
 
--- Function total song in playlist 
+-- Function total song in playlist, this funciton is useful to get the total number of songs in a playlist.
 DROP FUNCTION IF EXISTS fn_total_songs_in_playlist;
 
 DELIMITER //
