@@ -5,7 +5,7 @@ USE databass_db;
 -- TABLE:genre
 CREATE TABLE genres (
     genre_id INT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+    genre_name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- TABLE: users
@@ -23,10 +23,10 @@ CREATE TABLE users (
 CREATE TABLE artists (
     artist_id INT PRIMARY KEY,
     genre_id INT NOT NULL,
-    name VARCHAR(150) NOT NULL,
+    artist_name VARCHAR(150) NOT NULL,
     country VARCHAR(100) NOT NULL DEFAULT 'Unknown',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uq_artist_name UNIQUE (name),
+    CONSTRAINT uq_artist_name UNIQUE (artist_name),
     CONSTRAINT fk_artist_genre
         FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
@@ -35,24 +35,24 @@ CREATE TABLE artists (
 CREATE TABLE albums (
     album_id INT PRIMARY KEY,
     artist_id INT NOT NULL,
-    title VARCHAR(200) NOT NULL,
+    album_title VARCHAR(200) NOT NULL,
     duration DECIMAL(10,2),
     release_date DATE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_albums_artist
         FOREIGN KEY (artist_id) REFERENCES artists(artist_id),
-    CONSTRAINT uq_album_artist_title UNIQUE (artist_id, title)
+    CONSTRAINT uq_album_artist_title UNIQUE (artist_id, album_title)
 );
 -- TABLE: songs
 CREATE TABLE songs (
     song_id INT PRIMARY KEY,
     album_id INT NOT NULL,
-    title VARCHAR(250) NOT NULL,
+    song_title VARCHAR(250) NOT NULL,
     duration DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_songs_album
         FOREIGN KEY (album_id) REFERENCES albums(album_id),
-    CONSTRAINT uq_song_album_title UNIQUE (album_id, title),
+    CONSTRAINT uq_song_album_title UNIQUE (album_id, song_title),
     CONSTRAINT chk_song_duration CHECK (duration > 0)
 );
 -- TABLE: playlists
