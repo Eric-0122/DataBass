@@ -28,3 +28,25 @@ SELECT user_id, SUM(duration) AS "total playlist time"
 FROM playlists 
 GROUP BY user_id
 ORDER BY SUM(duration) DESC;
+-- Finds the longest and shortest song
+SELECT 
+    MIN(duration) AS shortest_song,
+    MAX(duration) AS longest_song
+FROM songs;
+---Finds the artist whose songs appears in the MOST playlists
+SELECT a.name, COUNT(DISTINCT e.playlist_id) AS playlist_count
+FROM artists a
+JOIN accredation ac ON a.artist_id = ac.artist_id
+JOIN existence e ON ac.song_id = e.song_id
+GROUP BY a.name
+ORDER BY playlist_count DESC
+LIMIT 1;
+--finds the top 3 artist by number of songs across all playlist
+SELECT a.name AS "Artist", COUNT(s.song_id) AS "Total Songs"
+FROM artists a
+JOIN accredation ac ON a.artist_id = ac.artist_id
+JOIN songs s ON ac.song_id = s.song_id
+JOIN existence e ON s.song_id = e.song_id
+GROUP BY a.artist_id, a.name
+ORDER BY COUNT(s.song_id) DESC
+LIMIT 3;
