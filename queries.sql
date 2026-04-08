@@ -29,12 +29,12 @@ FROM playlists
 GROUP BY user_id
 ORDER BY SUM(duration) DESC;
 --top 3 artist across playlist based on songs
-SELECT a.name AS "Artist", COUNT(s.song_id) AS "Total Songs"
+SELECT a.artist_name AS "Artist", COUNT(s.song_id) AS "Total Songs"
 FROM artists a
 JOIN accredation ac ON a.artist_id = ac.artist_id
 JOIN songs s ON ac.song_id = s.song_id
 JOIN existence e ON s.song_id = e.song_id
-GROUP BY a.artist_id, a.name
+GROUP BY a.artist_id, a.artist_name
 ORDER BY COUNT(s.song_id) DESC
 LIMIT 3;
 --recommendation to other playlist
@@ -43,12 +43,12 @@ SELECT DISTINCT e1.playlist_id AS playlist_1,
 FROM existence e1
 JOIN existence e2 
      ON e1.song_id = e2.song_id
-WHERE e1.playlist_id <> e2.playlist_id;
+WHERE e1.playlist_id < e2.playlist_id;
 --artist that exist in more than one playlist
-SELECT a.name, COUNT(DISTINCT e.playlist_id) AS playlist_count
+SELECT a.artist_name, COUNT(DISTINCT e.playlist_id) AS playlist_count
 FROM artists a
 JOIN accredation ac ON a.artist_id = ac.artist_id
 JOIN existence e ON ac.song_id = e.song_id
-GROUP BY a.name
+GROUP BY a.artist_name
 ORDER BY playlist_count DESC
 LIMIT 1;
