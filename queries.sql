@@ -9,7 +9,7 @@ GROUP BY a.artist_id, a.artist_name
 ORDER BY COUNT(s.song_id) DESC;
 
 -- Find a user's most listened to genre
-SELECT user_id, genre
+SELECT user_id, genre AS "User's Top Genre"
 FROM (SELECT p.user_id, gs.genre, COUNT(gs.genre) AS genre_count
     FROM playlists p
     LEFT JOIN existence e ON p.playlist_id = e.playlist_id
@@ -28,7 +28,8 @@ SELECT user_id, SUM(duration) AS "total playlist time"
 FROM playlists 
 GROUP BY user_id
 ORDER BY SUM(duration) DESC;
---top 3 artist across playlist based on songs
+
+-- top 3 artist across playlist based on songs
 SELECT a.artist_name AS "Artist", COUNT(s.song_id) AS "Total Songs"
 FROM artists a
 JOIN accredation ac ON a.artist_id = ac.artist_id
@@ -37,7 +38,8 @@ JOIN existence e ON s.song_id = e.song_id
 GROUP BY a.artist_id, a.artist_name
 ORDER BY COUNT(s.song_id) DESC
 LIMIT 3;
---recommendation to other playlist
+
+-- recommendation to other playlist
 WITH playlist_genres AS (
     SELECT p.playlist_id, gs.genre, COUNT(gs.genre) AS genre_count
     FROM playlists p
@@ -58,7 +60,8 @@ JOIN playlist_genres p2
      ON p1.genre = p2.genre AND p1.playlist_id < p2.playlist_id
 GROUP BY p1.playlist_id, p2.playlist_id
 ORDER BY shared_genres DESC;
---artist that exist in more than one playlist
+
+-- artist that exist in more than one playlist
 SELECT a.artist_name, COUNT(DISTINCT e.playlist_id) AS playlist_count
 FROM artists a
 JOIN accredation ac ON a.artist_id = ac.artist_id
@@ -66,7 +69,6 @@ JOIN existence e ON ac.song_id = e.song_id
 GROUP BY a.artist_name
 ORDER BY playlist_count DESC
 LIMIT 1;
-
 
 -- Find how many playlists each user has created
 SELECT CONCAT(u.first_name, ' ', u.last_name) AS "User Name", COUNT(p.playlist_id) AS "Total Playlists"
@@ -93,4 +95,3 @@ WHERE s.duration > (
     FROM songs
 )
 ORDER BY s.duration DESC;
-
