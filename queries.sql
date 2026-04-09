@@ -66,3 +66,31 @@ JOIN existence e ON ac.song_id = e.song_id
 GROUP BY a.artist_name
 ORDER BY playlist_count DESC
 LIMIT 1;
+
+
+-- Find how many playlists each user has created
+SELECT CONCAT(u.first_name, ' ', u.last_name) AS "User Name", COUNT(p.playlist_id) AS "Total Playlists"
+FROM users u
+LEFT JOIN playlists p ON u.user_id = p.user_id
+GROUP BY u.user_id, u.first_name, u.last_name
+ORDER BY COUNT(p.playlist_id) DESC;
+
+-- Find the distinct genres that appear in playlists and rank them
+SELECT DISTINCT g.genre_name AS "Genre", COUNT(*) AS "Times In Playlists"
+FROM genres g
+JOIN artists a ON g.genre_id = a.genre_id
+JOIN accredation ac ON a.artist_id = ac.artist_id
+JOIN existence e ON ac.song_id = e.song_id
+GROUP BY g.genre_id, g.genre_name
+ORDER BY COUNT(*) DESC;
+
+-- Find songs that are longer than the average song duration
+SELECT s.song_title AS "Song Title", s.duration AS "Song Duration", al.album_title AS "Album"
+FROM songs s
+JOIN albums al ON s.album_id = al.album_id
+WHERE s.duration > (
+    SELECT AVG(duration)
+    FROM songs
+)
+ORDER BY s.duration DESC;
+
