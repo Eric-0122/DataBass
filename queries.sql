@@ -29,7 +29,7 @@ FROM playlists
 GROUP BY user_id
 ORDER BY SUM(duration) DESC;
 
--- top 3 artist across playlist based on songs
+-- top 3 artist across all playlists based on songs
 SELECT a.artist_name AS "Artist", COUNT(s.song_id) AS "Total Songs"
 FROM artists a
 JOIN accredation ac ON a.artist_id = ac.artist_id
@@ -39,7 +39,7 @@ GROUP BY a.artist_id, a.artist_name
 ORDER BY COUNT(s.song_id) DESC
 LIMIT 3;
 
--- recommendation to other playlist
+-- recommend other playlists based on shared genres
 WITH playlist_genres AS (
     SELECT p.playlist_id, gs.genre, COUNT(gs.genre) AS genre_count
     FROM playlists p
@@ -61,7 +61,7 @@ JOIN playlist_genres p2
 GROUP BY p1.playlist_id, p2.playlist_id
 ORDER BY shared_genres DESC;
 
--- artist that exist in more than one playlist
+-- Find an artist that exists in more than one playlist and how many playlists they are in.
 SELECT a.artist_name, COUNT(DISTINCT e.playlist_id) AS playlist_count
 FROM artists a
 JOIN accredation ac ON a.artist_id = ac.artist_id

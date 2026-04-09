@@ -93,6 +93,8 @@ CREATE TABLE accredation (
 DROP TRIGGER IF EXISTS update_playlist_duration_after_insert;
 DROP TRIGGER IF EXISTS update_playlist_duration_after_delete;
 DROP TRIGGER IF EXISTS update_playlist_duration_after_update;
+
+-- this trigger ensures that the derived playlist duration is up to date when a song is inserted into a playlsit.
 DELIMITER //
 CREATE TRIGGER update_playlist_duration_after_insert
     AFTER INSERT
@@ -105,7 +107,7 @@ BEGIN
     SET duration = duration + song_duration
     WHERE playlist_id = NEW.playlist_id;
 END //
-
+-- this trigger ensures that the derived playlist duration is up to date when a song is deleted from a playlsit.
 CREATE TRIGGER update_playlist_duration_after_delete
     AFTER DELETE
 ON existence
@@ -118,6 +120,7 @@ BEGIN
     WHERE playlist_id = OLD.playlist_id;
 END //
 
+-- this trigger ensures that the derived playlist duration is up to date when a song is updated in a playlsit.
 DELIMITER //
 CREATE TRIGGER update_playlist_duration_after_update
     AFTER UPDATE ON existence
