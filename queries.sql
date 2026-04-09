@@ -38,12 +38,26 @@ GROUP BY a.artist_id, a.artist_name
 ORDER BY COUNT(s.song_id) DESC
 LIMIT 3;
 --recommendation to other playlist
-SELECT DISTINCT e1.playlist_id AS playlist_1,
-                e2.playlist_id AS playlist_2
-FROM existence e1
-JOIN existence e2 
-     ON e1.song_id = e2.song_id
-WHERE e1.playlist_id < e2.playlist_id;
+WITH playlist_genres AS (
+    SELECT p.playlist_id, gs.genre, COUNT(gs.genre) AS genre_count
+    FROM playlists p
+    JOIN existence e ON p.playlist_id = e.playlist_id
+    JOIN accredation ac ON e.song_id = ac.song_id
+    JOIN (
+        SELECT a.artist_id, g.genre_name AS genre
+        FROM artists a
+        JOIN genres g ON a.genre_id = g.genre_id
+    ) gs ON ac.artist_id = gs.artist_id
+    GROUP BY p.playlist_id, gs.genre
+)
+SELECT p1.playlist_id AS playlist_1,
+       p2.playlist_id AS playlist_2,
+       COUNT(*) AS shared_genres
+FROM playlist_genres p1
+JOIN playlist_genres p2 
+     ON p1.genre = p2.genre AND p1.playlist_id < p2.playlist_id
+GROUP BY p1.playlist_id, p2.playlist_id
+ORDER BY shared_genres DESC;
 --artist that exist in more than one playlist
 SELECT a.artist_name, COUNT(DISTINCT e.playlist_id) AS playlist_count
 FROM artists a
