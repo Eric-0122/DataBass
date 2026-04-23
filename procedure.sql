@@ -12,7 +12,7 @@ BEGIN
 
     SELECT IFNULL(MAX(song_id), 0) + 1 INTO new_song_id FROM songs;
 
-    INSERT INTO songs (song_id, album, title, duration)
+    INSERT INTO songs (song_id, album_id, song_title, duration)
     VALUES (new_song_id, p_album, p_title, p_duration);
 
     SELECT IFNULL(MAX(accredation_id), 0) + 1 INTO new_accredation_id FROM accredation;
