@@ -4,4 +4,4 @@ INSERT INTO songs (song_id, album_id,song_title,duration) values (226,1,"Talking
 INSERT INTO songs (song_id, album_id,song_title,duration) values (227,1,"Liquor Store Blues", 3.82);
 INSERT INTO songs (song_id, album_id,song_title,duration) values (228,1,"The Other Side", 3.78);
 
-INSERT INTO accredation values(666,221,1),(667,225,1),(668,226,1),(669,227,1),(670,228,1);
+INSERT INTO accreditation values(666,221,1),(667,225,1),(668,226,1),(669,227,1),(670,228,1);
