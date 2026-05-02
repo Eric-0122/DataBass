@@ -13,4 +13,6 @@ in the spotify million playlist json and converts it to insert into statements. 
 ## Demonstration Video
 Watch our demonstration video! It explains our schema and database in depth!  
 [click here](https://youtu.be/hEBVxVTsqzg) 
+## DataBass Tableau Dashboard
+<img width="1500" height="1250" alt="DataBass Dashboard" src="https://github.com/user-attachments/assets/fca7ea00-c01e-46ce-92c2-68434c213cc6" />
 
