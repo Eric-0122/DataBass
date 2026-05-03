@@ -104,8 +104,7 @@ WHERE s.duration > (
 ORDER BY s.duration DESC;
 
 -- find songs creditted to more than one artist in database
-SELECT s.song_id, COUNT(artist_id) AS num_artists_credited
-FROM accreditation a
-JOIN songs s ON s.song_id = a.song_id
-GROUP BY s.song_id
+SELECT song_id, COUNT(artist_id) AS num_artists_credited
+FROM accreditation
+GROUP BY song_id
 HAVING COUNT(artist_id) > 1;
