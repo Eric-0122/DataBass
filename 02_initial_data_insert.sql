@@ -991,6 +991,9 @@ INSERT INTO accreditation (accreditation_id, song_id, artist_id) VALUES (18, 18,
 INSERT INTO accreditation (accreditation_id, song_id, artist_id) VALUES (148, 148, 78 );
 INSERT INTO accreditation (accreditation_id, song_id, artist_id) VALUES (213, 213, 112 );
 INSERT INTO accreditation (accreditation_id, song_id, artist_id) VALUES (83, 83, 48 );
+
+-- EXTRA ARTISTS ACCREDITITED TO FEATURED SONGS
+INSERT INTO accreditation (accreditation_id, song_id, artist_id) VALUES (671,164,85), (672,198,27) ,(673,107,27);
 -- SUMMARY --
 -- Extracted a total of 114 artists, 149 albums, 220 songs, 20 playlists, 225 existences, and 220 accreditations.
 

@@ -224,7 +224,7 @@ BEGIN
     INSERT INTO songs (song_id, album_id, song_title, duration)
     VALUES (new_song_id, p_album, p_title, p_duration);
 
-    SELECT IFNULL(MAX(accreditation_id), 0) + 1 INTO new_accreditation_id FROM accredation;
+    SELECT IFNULL(MAX(accreditation_id), 0) + 1 INTO new_accreditation_id FROM accreditation;
 
     INSERT INTO accreditation (accreditation_id, song_id, artist_id)
     VALUES (new_accreditation_id, new_song_id, p_artist_id);
